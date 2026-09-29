@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>分镜视频</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #1e1e1e;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        video {
+            max-width: 100%;
+            max-height: 100%;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <video id="v" controls autoplay></video>
+    <script>
+        const params = new URLSearchParams(window.location.hash.substring(1));
+        const videoPath = params.get('video');
+        if (videoPath) {
+            document.getElementById('v').src = 'file:///' + videoPath;
+        }
+    </script>
+</body>
+</html>

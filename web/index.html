@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>MG 动画工具</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: "Microsoft YaHei", sans-serif;
+            background: #1e1e1e;
+            color: #e0e0e0;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            font-size: 14px;
+        }
+
+        /* ================= 左栏 ================= */
+        #sidebar {
+            width: 240px;
+            background: #252526;
+            border-right: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #sidebar-header {
+            padding: 14px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            border-bottom: 1px solid #eee;
+        }
+
+        #new-shot-bar {
+            padding: 10px 12px;
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        #new-shot-bar button {
+            flex: 1;
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+
+        #shot-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 6px 0;
+        }
+
+        .shot-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 3px solid transparent;
+        }
+
+        .shot-item:hover { background: #f0f7ff; }
+        .shot-item.active {
+            background: #e6f2ff;
+            border-left-color: #409eff;
+        }
+
+        .shot-item.active .name {
+            color: #ffd93d;
+        }
+
+        .shot-item .status {
+            font-size: 14px;
+            width: 18px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .shot-item .name {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .shot-item .shot-checkbox {
+            flex-shrink: 0;
+            cursor: pointer;
+            width: 15px;
+            height: 15px;
+        }
+
+        /* ================= 右栏 ================= */
+        #main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 24px;
+            gap: 14px;
+            overflow: hidden;
+        }
+
+        #current-shot-title {
+            flex-shrink: 0;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 10px 14px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            color: #333;
+        }
+
+        #materials-status {
+            margin-left: 30px;
+        }
+
+        #script-section {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        #script-section label {
+            flex-shrink: 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        #script-input {
+            flex: 1;
+            min-height: 0;
+            width: 100%;
+            padding: 14px;
+            font-size: 14px;
+            font-family: inherit;
+            border: 1px solid #3c3c3c;
+            border-radius: 4px;
+            resize: none;
+            background: #2d2d2d;
+            color: #e0e0e0;
+            line-height: 1.6;
+            overflow-y: auto;
+        }
+
+        #script-input:focus {
+            outline: none;
+            border-color: #409eff;
+        }
+
+        #script-input::placeholder { color: #bbb; }
+
+        /* ================= 按钮 ================= */
+        button {
+            background: #fff;
+            color: #333;
+            border: 1px solid #ddd;
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+
+        button:hover {
+            background: #f0f7ff;
+            border-color: #409eff;
+            color: #409eff;
+        }
+
+        button.primary {
+            background: #409eff;
+            color: #fff;
+            border-color: #409eff;
+        }
+
+        button.primary:hover {
+            background: #66b1ff;
+            border-color: #66b1ff;
+            color: #fff;
+        }
+
+        /* ================= 底部区 ================= */
+        #bottom-bar {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-row, .btn-row-5 {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* ================= 进度条 ================= */
+        #progress-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        #progress-bar-bg {
+            flex: 1;
+            height: 16px;
+            background: #eee;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        #progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #409eff, #66b1ff);
+            border-radius: 8px;
+            transition: width 0.3s ease;
+        }
+
+        #progress-text {
+            font-size: 14px;
+            line-height: 16px;
+            color: #409eff;
+            font-weight: bold;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* ================= 右键菜单 ================= */
+        .ctx-item:hover {
+            background: #409eff;
+            color: #fff;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- ================= 左栏 ================= -->
+    <div id="sidebar">
+        <div id="sidebar-header">分镜文件夹列表</div>
+
+        <div id="new-shot-bar">
+            <button>新建分镜</button>
+            <button>删除分镜</button>
+        </div>
+
+        <div id="shot-list"></div>
+    </div>
+
+    <!-- ================= 右栏 ================= -->
+    <div id="main">
+
+        <div id="current-shot-title">
+            <span id="current-shot-name">当前分镜：—</span>
+            <span id="materials-status"></span>
+        </div>
+
+        <div id="script-section">
+            <label>分镜文案</label>
+            <textarea id="script-input" placeholder="在这里输入当前分镜的完整文案" spellcheck="false"></textarea>
+        </div>
+
+        <div id="bottom-bar">
+
+            <div class="btn-row">
+                <button>拼接提示词</button>
+                <button>导入配置文件</button>
+                <button>导入视频</button>
+                <button>预览画面</button>
+            </div>
+
+            <div class="btn-row-5">
+                <button id="feedbackBtn" style="margin-right: auto;">💬 反馈</button>
+                <button id="renderShotBtn" class="primary">生成分镜视频</button>
+                <button id="renderFullBtn" class="primary">生成完整视频</button>
+                <button id="viewResultBtn">看成品视频</button>
+                <button id="archiveBtn">归档</button>
+                <button id="manualBtn">查看说明书</button>
+            </div>
+            
+            <div id="progress-section">
+                <div id="progress-bar-bg">
+                    <div id="progress-bar-fill"></div>
+                </div>
+                <div id="progress-text">进度 0.00%</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ================= 导入配置确认弹窗 ================= -->
+    <div id="configModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9998; align-items:center; justify-content:center;">
+        <div style="background:#2d2d2d; border:1px solid #444; border-radius:10px; padding:24px 32px; min-width:520px; max-width:720px; box-shadow:0 10px 40px rgba(0,0,0,0.5);">
+            <div style="font-size:16px; font-weight:bold; margin-bottom:16px;">
+                确认导入配置到 <span id="modalShotId" style="color:#409eff;"></span> ？
+            </div>
+            <div style="color:#aaa; font-size:13px; margin-bottom:6px;">配置里第一句台词：</div>
+            <div id="modalVoiceText" style="background:#1e1e1e; padding:14px 18px; border-radius:6px; font-size:15px; line-height:1.6; margin-bottom:20px; word-break:break-all;"></div>
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button id="modalCancelBtn" style="padding:8px 20px;">取消</button>
+                <button id="modalOkBtn" class="primary" style="padding:8px 20px;">确认导入</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 归档弹窗 ================= -->
+    <div id="archiveModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9998; align-items:center; justify-content:center;">
+        <div style="background:#2d2d2d; border:1px solid #444; border-radius:10px; padding:24px 32px; min-width:420px; max-width:520px; box-shadow:0 10px 40px rgba(0,0,0,0.5);">
+            <div style="font-size:16px; font-weight:bold; margin-bottom:16px;">归档当前项目</div>
+            <div style="color:#aaa; font-size:13px; margin-bottom:6px;">归档文件夹名字：</div>
+            <input id="archiveNameInput" type="text" style="width:100%; padding:10px 14px; background:#1e1e1e; border:1px solid #444; border-radius:6px; color:#e0e0e0; font-size:14px; font-family:inherit; margin-bottom:20px; outline:none; box-sizing:border-box;">
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button id="archiveCancelBtn" style="padding:8px 20px;">取消</button>
+                <button id="archiveOkBtn" class="primary" style="padding:8px 20px;">确认归档</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= 文案区右键菜单 ================= -->
+    <div id="ctxMenu" style="display:none; position:fixed; z-index:9999; background:#2d2d2d; border:1px solid #444; border-radius:6px; padding:6px 0; box-shadow:0 6px 24px rgba(0,0,0,0.5); min-width:120px;">
+        <div class="ctx-item" data-action="copy" style="padding:8px 20px; cursor:pointer; font-size:14px;">复制</div>
+        <div class="ctx-item" data-action="paste" style="padding:8px 20px; cursor:pointer; font-size:14px;">粘贴</div>
+        <div class="ctx-item" data-action="selectall" style="padding:8px 20px; cursor:pointer; font-size:14px;">全选</div>
+    </div>
+
+    <script>
+        // ================= 状态图标映射 =================
+        const STATUS_ICON = {
+            "todo":  "⬜",
+            "doing": "🔄",
+            "done":  "✅",
+        };
+
+        // ================= 渲染分镜列表 =================
+        function renderShotList(shots, autoSelect = true) {
+            const container = document.getElementById("shot-list");
+            container.innerHTML = "";
+
+            shots.forEach(shot => {
+                const item = document.createElement("div");
+                item.className = "shot-item";
+                item.dataset.shotId = shot.id;
+
+                const statusIcon = STATUS_ICON[shot.status] || "⬜";
+
+                item.innerHTML = `
+                    <span class="status">${statusIcon}</span>
+                    <span class="name">${shot.id}</span>
+                    <input type="checkbox" class="shot-checkbox">
+                `;
+
+                item.addEventListener("click", (e) => {
+                    if (e.target.classList.contains("shot-checkbox")) return;
+                    selectShot(item);
+                });
+
+                container.appendChild(item);
+            });
+
+            if (autoSelect) {
+                const first = container.querySelector(".shot-item");
+                if (first) selectShot(first);
+            }
+        }
+
+        // ================= 刷新上方材料状态栏 =================
+        async function refreshMaterials(shotId) {
+            const m = await window.pywebview.api.get_shot_materials(shotId);
+            const parts = [];
+            parts.push(`文案${m.script ? '✅' : '❌'}`);
+            parts.push(`视频${m.video ? '✅' : '❌'}`);
+            parts.push(`配置${m.config ? '✅' : '❌'}`);
+            document.getElementById("materials-status").innerHTML = parts.join("　");
+        }
+
+        // ================= 选中分镜 =================
+        function selectShot(el) {
+            document.querySelectorAll(".shot-item").forEach(x => x.classList.remove("active"));
+            el.classList.add("active");
+
+            const shotId = el.dataset.shotId;
+            document.getElementById("current-shot-name").textContent = "当前分镜：" + shotId;
+
+            window.pywebview.api.get_script(shotId).then(text => {
+                document.getElementById("script-input").value = text || "";
+            });
+
+            refreshMaterials(shotId);
+        }
+
+        // ================= 进度条 =================
+        function setProgress(p) {
+            p = Math.max(0, Math.min(100, p));
+            document.getElementById("progress-bar-fill").style.width = p + "%";
+            document.getElementById("progress-text").textContent = "进度 " + p.toFixed(2) + "%";
+        }
+
+        function setPreparing() {
+            document.getElementById("progress-bar-fill").style.width = "0%";
+            document.getElementById("progress-text").textContent = "准备中…";
+        }
+
+        function lockRenderButtons() {
+            document.getElementById("renderShotBtn").disabled = true;
+            document.getElementById("renderFullBtn").disabled = true;
+        }
+
+        function unlockRenderButtons() {
+            document.getElementById("renderShotBtn").disabled = false;
+            document.getElementById("renderFullBtn").disabled = false;
+        }
+
+        // ================= 启动：拉分镜列表 =================
+        async function loadShotList() {
+            try {
+                const shots = await window.pywebview.api.get_shot_list();
+                renderShotList(shots);
+            } catch (err) {
+                console.error("加载分镜失败：", err);
+            }
+        }
+
+        window.addEventListener("pywebviewready", () => {
+            loadShotList();
+        });
+
+        // ================= 文案框：打字/粘贴/删减，都自动存 =================
+        document.getElementById("script-input").addEventListener("input", (e) => {
+            const active = document.querySelector(".shot-item.active");
+            if (!active) return;
+            const shotId = active.dataset.shotId;
+            window.pywebview.api.save_script(shotId, e.target.value).then(newStatus => {
+                if (!newStatus) return;
+                const iconEl = active.querySelector(".status");
+                if (iconEl) iconEl.textContent = STATUS_ICON[newStatus] || "⬜";
+                refreshMaterials(shotId);
+            });
+        });
+
+        // ================= 新建分镜 =================
+        async function onNewShot() {
+            const newId = await window.pywebview.api.new_shot();
+            const shots = await window.pywebview.api.get_shot_list();
+            renderShotList(shots, false);
+
+            const el = document.querySelector(`.shot-item[data-shot-id="${newId}"]`);
+            if (el) selectShot(el);
+        }
+
+        // ================= 删除分镜 =================
+        async function onDeleteShots() {
+            const checked = document.querySelectorAll(".shot-item .shot-checkbox:checked");
+
+            if (checked.length === 0) {
+                alert("请先勾选要删除的分镜");
+                return;
+            }
+
+            const ids = [];
+            checked.forEach(cb => {
+                ids.push(cb.closest(".shot-item").dataset.shotId);
+            });
+
+            if (!confirm(`确定删除这 ${ids.length} 个分镜吗？\n\n${ids.join("、")}`)) {
+                return;
+            }
+
+            await window.pywebview.api.delete_shots(ids);
+
+            const shots = await window.pywebview.api.get_shot_list();
+            renderShotList(shots, false);
+
+            document.getElementById("current-shot-name").textContent = "当前分镜：—";
+            document.getElementById("materials-status").innerHTML = "";
+            document.getElementById("script-input").value = "";
+        }
+
+        document.querySelector("#new-shot-bar button:nth-child(1)").addEventListener("click", onNewShot);
+        document.querySelector("#new-shot-bar button:nth-child(2)").addEventListener("click", onDeleteShots);
+
+        // ================= 小气泡提示 =================
+        function showToast(msg) {
+            const t = document.createElement("div");
+            t.textContent = msg;
+            t.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 24px;
+                background: #409eff;
+                color: #fff;
+                padding: 10px 18px;
+                border-radius: 6px;
+                font-size: 14px;
+                z-index: 9999;
+                box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+                transition: opacity 0.3s;
+            `;
+            document.body.appendChild(t);
+            setTimeout(() => {
+                t.style.opacity = "0";
+                setTimeout(() => t.remove(), 300);
+            }, 2000);
+        }
+
+        // ================= 拼接提示词 =================
+        async function onBuildPrompt() {
+            const active = document.querySelector(".shot-item.active");
+            if (!active) {
+                alert("请先选中一个分镜");
+                return;
+            }
+            const shotId = active.dataset.shotId;
+
+            const result = await window.pywebview.api.build_prompt(shotId);
+            if (!result) {
+                alert("文案为空，请先输入文案");
+                return;
+            }
+
+            try {
+                await navigator.clipboard.writeText(result);
+            } catch (err) {
+                const ta = document.createElement("textarea");
+                ta.value = result;
+                ta.style.position = "fixed";
+                ta.style.opacity = "0";
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand("copy");
+                document.body.removeChild(ta);
+            }
+
+            showToast("✅ 已复制到剪贴板，去粘贴给 AI");
+        }
+
+        document.querySelector(".btn-row button:nth-child(1)").addEventListener("click", onBuildPrompt);
+
+        // ================= 导入配置文件 =================
+        let _pendingConfig = null;
+
+        async function onImportConfig() {
+            const active = document.querySelector(".shot-item.active");
+            if (!active) {
+                alert("请先选中一个分镜");
+                return;
+            }
+            const shotId = active.dataset.shotId;
+
+            const readResult = await window.pywebview.api.read_config_from_clipboard();
+
+            if (readResult.msg === "clipboard_empty") {
+                alert("剪贴板是空的，请先复制 AI 生成的配置");
+                return;
+            }
+            if (readResult.msg === "not_config") {
+                alert("剪贴板里没读到配置内容，请确认复制了以 window.SCENES 开头的配置");
+                return;
+            }
+
+            _pendingConfig = { shotId: shotId, content: readResult.content };
+
+            document.getElementById("modalShotId").textContent = shotId;
+            const voiceText = readResult.first_voice_text || "（未读到台词，配置可能有问题）";
+            document.getElementById("modalVoiceText").textContent = voiceText;
+            document.getElementById("configModal").style.display = "flex";
+        }
+
+        document.getElementById("modalCancelBtn").addEventListener("click", () => {
+            _pendingConfig = null;
+            document.getElementById("configModal").style.display = "none";
+        });
+
+        document.getElementById("modalOkBtn").addEventListener("click", async () => {
+            if (!_pendingConfig) return;
+
+            const shotId = _pendingConfig.shotId;
+            const content = _pendingConfig.content;
+
+            document.getElementById("configModal").style.display = "none";
+
+            const saveResult = await window.pywebview.api.save_config(shotId, content);
+            if (!saveResult.ok) {
+                alert("保存失败：" + saveResult.msg);
+                return;
+            }
+
+            const active = document.querySelector(`.shot-item[data-shot-id="${shotId}"]`);
+            if (active) {
+                const iconEl = active.querySelector(".status");
+                if (iconEl) iconEl.textContent = STATUS_ICON[saveResult.status] || "⬜";
+            }
+
+            refreshMaterials(shotId);
+            showToast("✅ 配置已导入");
+
+            _pendingConfig = null;
+        });
+
+        document.querySelector(".btn-row button:nth-child(2)").addEventListener("click", onImportConfig);
+
+        // ================= 导入视频 =================
+        async function onImportVideo() {
+            const active = document.querySelector(".shot-item.active");
+            if (!active) {
+                alert("请先选中一个分镜");
+                return;
+            }
+            const shotId = active.dataset.shotId;
+
+            let result = await window.pywebview.api.import_video(shotId, false);
+
+            if (result.msg === "already_has_video") {
+                if (!confirm("这个分镜已经有视频了，要替换吗？")) return;
+                result = await window.pywebview.api.import_video(shotId, true);
+            }
+
+            if (result.msg === "canceled") return;
+
+            if (!result.ok) {
+                alert("导入失败：" + result.msg);
+                return;
+            }
+
+            const iconEl = active.querySelector(".status");
+            if (iconEl) iconEl.textContent = STATUS_ICON[result.status] || "⬜";
+
+            refreshMaterials(shotId);
+            showToast("✅ 视频已导入：" + result.filename);
+        }
+
+        document.querySelector(".btn-row button:nth-child(3)").addEventListener("click", onImportVideo);
+
+        // ================= 预览画面 =================
+        async function onPreview() {
+            const active = document.querySelector(".shot-item.active");
+            if (!active) {
+                alert("请先选中一个分镜");
+                return;
+            }
+            const shotId = active.dataset.shotId;
+            const result = await window.pywebview.api.preview_shot(shotId);
+            if (!result.ok) {
+                alert("打不开预览：" + result.msg);
+            }
+        }
+
+        document.querySelector(".btn-row button:nth-child(4)").addEventListener("click", onPreview);
+
+        // ================= 刷新分镜列表，保持当前选中 =================
+        async function refreshShotListKeepSelection() {
+            const active = document.querySelector(".shot-item.active");
+            const currentId = active ? active.dataset.shotId : null;
+
+            const shots = await window.pywebview.api.get_shot_list();
+            renderShotList(shots, false);
+
+            if (currentId) {
+                const el = document.querySelector(`.shot-item[data-shot-id="${currentId}"]`);
+                if (el) selectShot(el);
+            }
+        }
+
+        // ================= 生成完成 / 出错 =================
+        function onRenderDone() {
+            unlockRenderButtons();
+            setProgress(100);
+            showToast("✅ 生成完成");
+            refreshShotListKeepSelection();
+        }
+
+        function onRenderError(msg) {
+            unlockRenderButtons();
+            document.getElementById("progress-text").textContent = "进度 0.00%";
+            document.getElementById("progress-bar-fill").style.width = "0%";
+            alert("生成失败：" + msg);
+        }
+
+        // ================= 生成分镜视频 =================
+        async function onRenderShot() {
+            const active = document.querySelector(".shot-item.active");
+            if (!active) {
+                alert("请先选中一个分镜");
+                return;
+            }
+            const shotId = active.dataset.shotId;
+
+            const result = await window.pywebview.api.render_shot(shotId);
+            if (!result.ok) {
+                alert("无法生成：" + result.msg);
+                return;
+            }
+
+            lockRenderButtons();
+            setPreparing();
+        }
+
+                document.getElementById("renderShotBtn").addEventListener("click", onRenderShot);
+
+        // ================= 看成品视频 =================
+        document.getElementById("viewResultBtn").addEventListener("click", () => {
+            window.pywebview.api.open_workspace();
+        });
+
+        // ================= 生成完整视频 =================
+        async function onGenerateFullVideo() {
+            const result = await window.pywebview.api.generate_full_video();
+            if (!result.ok) {
+                alert("无法生成：" + result.msg);
+                return;
+            }
+            lockRenderButtons();
+            setPreparing();
+        }
+
+        document.getElementById("renderFullBtn").addEventListener("click", onGenerateFullVideo);
+
+        // ================= 归档 =================
+        async function onArchive() {
+            const check = await window.pywebview.api.check_archive_ready();
+            if (!check.ok) {
+                alert("无法归档：" + check.msg);
+                return;
+            }
+
+            const now = new Date();
+            const pad = n => String(n).padStart(2, '0');
+            const defName = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+
+            document.getElementById("archiveNameInput").value = defName;
+            document.getElementById("archiveModal").style.display = "flex";
+        }
+
+        document.getElementById("archiveCancelBtn").addEventListener("click", () => {
+            document.getElementById("archiveModal").style.display = "none";
+        });
+
+        document.getElementById("archiveOkBtn").addEventListener("click", async () => {
+            const folderName = document.getElementById("archiveNameInput").value.trim();
+            if (!folderName) {
+                alert("文件夹名不能为空");
+                return;
+            }
+
+            document.getElementById("archiveModal").style.display = "none";
+
+            const result = await window.pywebview.api.archive_workspace(folderName);
+            if (!result.ok) {
+                alert("无法归档：" + result.msg);
+                return;
+            }
+
+            showToast("✅ 已归档到 " + result.archive);
+
+            const shots = await window.pywebview.api.get_shot_list();
+            renderShotList(shots, true);
+
+            const active = document.querySelector(".shot-item.active");
+            if (active) {
+                refreshMaterials(active.dataset.shotId);
+            }
+        });
+
+        document.getElementById("archiveBtn").addEventListener("click", onArchive);
+
+                // ================= 查看说明书 =================
+        async function onManual() {
+            const result = await window.pywebview.api.open_manual();
+            if (!result.ok) {
+                alert("打开失败：" + result.msg);
+            }
+        }
+
+                // ================= 反馈 =================
+        document.getElementById("feedbackBtn").addEventListener("click", () => {
+            window.pywebview.api.open_feedback();
+        });
+         
+        document.getElementById("manualBtn").addEventListener("click", onManual);
+
+        // ================= 文案区右键菜单 =================
+        const scriptInputEl = document.getElementById("script-input");
+        const ctxMenuEl = document.getElementById("ctxMenu");
+
+        // 右键：弹出菜单
+        scriptInputEl.addEventListener("contextmenu", (e) => {
+            e.preventDefault();
+            ctxMenuEl.style.left = e.clientX + "px";
+            ctxMenuEl.style.top = e.clientY + "px";
+            ctxMenuEl.style.display = "block";
+        });
+
+        // 点别处：关闭菜单
+        document.addEventListener("click", (e) => {
+            if (!ctxMenuEl.contains(e.target)) {
+                ctxMenuEl.style.display = "none";
+            }
+        });
+
+        // 菜单项点击
+        ctxMenuEl.querySelectorAll(".ctx-item").forEach(item => {
+            item.addEventListener("click", async () => {
+                const action = item.dataset.action;
+                ctxMenuEl.style.display = "none";
+
+                if (action === "copy") {
+                    // 复制：拿选中的内容
+                    const sel = scriptInputEl.value.substring(scriptInputEl.selectionStart, scriptInputEl.selectionEnd);
+                    if (!sel) return;
+                    try {
+                        await navigator.clipboard.writeText(sel);
+                    } catch (err) {
+                        const ta = document.createElement("textarea");
+                        ta.value = sel;
+                        ta.style.position = "fixed";
+                        ta.style.opacity = "0";
+                        document.body.appendChild(ta);
+                        ta.select();
+                        document.execCommand("copy");
+                        document.body.removeChild(ta);
+                    }
+                } else if (action === "paste") {
+                    // 粘贴：从系统剪贴板读（走 Python）
+                    const text = await window.pywebview.api.read_clipboard();
+                    if (!text) return;
+                    const start = scriptInputEl.selectionStart;
+                    const end = scriptInputEl.selectionEnd;
+                    const val = scriptInputEl.value;
+                    scriptInputEl.value = val.substring(0, start) + text + val.substring(end);
+                    scriptInputEl.selectionStart = scriptInputEl.selectionEnd = start + text.length;
+                    scriptInputEl.focus();
+                    // 触发 input 事件，让自动保存生效
+                    scriptInputEl.dispatchEvent(new Event("input", { bubbles: true }));
+                } else if (action === "selectall") {
+                    // 全选
+                    scriptInputEl.focus();
+                    scriptInputEl.select();
+                }
+            });
+        });
+
+    </script>
+
+</body>
+</html>

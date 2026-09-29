@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# 虚拟环境
+venv/
+.venv/
+
+# PyInstaller
+build/
+dist/
+*.spec.bak
+
+# 用户数据
+workspace/
+archives/
+
+# 大文件（别人自己下）
+ms-playwright/
+ffmpeg/
+assets/ffmpeg/
+assets/VC_redist.x64.exe
+
+# IDE
+.vscode/
+.idea/
+
+# 系统
+Thumbs.db
+.DS_Store

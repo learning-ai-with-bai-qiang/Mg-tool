@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>MG 动画工具 · 使用说明书</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            font-size: 15px;
+            line-height: 1.8;
+            padding: 40px 0;
+        }
+
+        #wrap {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 30px;
+        }
+
+        /* 卡片里的文字限宽 820 居中；图片占满卡片 */
+        .step > *:not(.manual-img),
+        .intro > *,
+        h1,
+        .subtitle {
+            max-width: 820px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 40px;
+        }
+
+        /* 顶部说明块 */
+        .intro {
+            background: #252526;
+            border-left: 4px solid #409eff;
+            padding: 20px 24px;
+            border-radius: 6px;
+            margin-bottom: 40px;
+        }
+
+        .intro p { margin-bottom: 8px; }
+        .intro p:last-child { margin-bottom: 0; }
+
+        /* 步骤卡片 */
+        .step {
+            background: #252526;
+            border-radius: 8px;
+            padding: 24px 28px;
+            margin-bottom: 24px;
+            border: 1px solid #333;
+        }
+
+        .step-num {
+            display: inline-block;
+            background: #409eff;
+            color: #fff;
+            font-size: 13px;
+            font-weight: bold;
+            padding: 3px 12px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .step h2 {
+            font-size: 18px;
+            color: #fff;
+            margin-bottom: 14px;
+        }
+
+        .step p {
+            margin-bottom: 10px;
+        }
+
+        .step ul {
+            margin-left: 20px;
+            margin-bottom: 12px;
+        }
+
+        .step li {
+            margin-bottom: 6px;
+        }
+
+        /* 提示块 */
+        .tip {
+            background: rgba(255, 217, 61, 0.08);
+            border-left: 3px solid #ffd93d;
+            padding: 12px 18px;
+            margin: 12px 0;
+            border-radius: 4px;
+            color: #ffd93d;
+            font-size: 14px;
+        }
+
+        .tip strong { color: #fff; }
+
+        /* 警告块 */
+        .warn {
+            background: rgba(255, 80, 80, 0.08);
+            border-left: 3px solid #ff5050;
+            padding: 12px 18px;
+            margin: 12px 0;
+            border-radius: 4px;
+            color: #ff8888;
+            font-size: 14px;
+        }
+
+        .warn strong { color: #fff; }
+
+        /* 说明书图片 */
+        .manual-img {
+            margin: 16px 0;
+            text-align: center;
+        }
+
+        .manual-img img {
+            max-width: 100%;
+            border-radius: 6px;
+            border: 1px solid #333;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+        }
+
+        /* 截图占位框（还没放图的位置用） */
+        .img-placeholder {
+            border: 2px dashed #444;
+            border-radius: 6px;
+            padding: 40px 20px;
+            text-align: center;
+            color: #666;
+            font-size: 13px;
+            margin: 16px 0;
+            background: #1a1a1a;
+        }
+
+        .img-placeholder::before {
+            content: "📷 截图位置";
+            display: block;
+            margin-bottom: 8px;
+            font-size: 20px;
+            opacity: 0.5;
+        }
+
+        /* 底部说明 */
+        .footer {
+            text-align: center;
+            color: #666;
+            font-size: 13px;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+        }
+
+        /* 遇到问题怎么办 */
+        .faq-item {
+            margin-bottom: 14px;
+        }
+
+        .faq-q {
+            color: #fff;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .faq-a {
+            color: #aaa;
+            padding-left: 16px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div id="wrap">
+
+    <h1>MG 动画工具 · 使用说明书</h1>
+    <div class="subtitle">跟着步骤走，小白也能轻松做出完整的音画同步 MG 动画视频</div>
+
+    <!-- ============ 开始之前 ============ -->
+    <div class="intro">
+        <p><strong>这个工具干啥的：</strong>帮助不会写代码的用户，借助免费 AI 设计动画，利用这个工具加工，制作音画同步的 MG 动画视频。</p>
+        <p><strong>工作模式：</strong>一个分镜一个分镜地做。做好一个看一个，全部满意后，再合并成一个完整视频。</p>
+        <p><strong>第一次打开可能会弹窗：</strong>Windows 可能会弹出"你要允许此应用对你的设备进行更改吗？"，点 <strong>"是"</strong> 即可。这是安装微软运行库，安全，只弹一次。</p>
+    </div>
+ 
+    <!-- ============ 第 1 步 ============ -->
+    <div class="step">
+        <span class="step-num">第 1 步</span>
+        <h2>写文案</h2>
+        <p>打开工具，你会看到左右两块：</p>
+        <ul>
+            <li><strong>左边</strong>是「分镜文件夹列表」，默认有一个 <code>shot_01</code>（它就是一个分镜的意思）。</li>
+            <li><strong>右边</strong>是「分镜文案」区，你的文案就写在这里。</li>
+        </ul>
+
+        <div class="manual-img">
+            <img src="manual_images/01-ui.png" alt="整体界面">
+        </div>
+
+        <p>把这段分镜的文案，打进右边的文案框里。</p>
+
+        <div class="tip">
+            <strong>不用点保存。</strong>你打一个字，工具就自动存一个字。
+        </div>
+    </div>
+
+    <!-- ============ 第 2 步 ============ -->
+    <div class="step">
+        <span class="step-num">第 2 步</span>
+        <h2>点「拼接提示词」</h2>
+        <p>文案写完，点右下角的 <strong>「拼接提示词」</strong> 按钮。</p>
+        <p>工具会自动把一段"指令"复制到你的剪贴板，界面右上角会弹出提示"已复制,去粘贴给AI"。</p>
+
+        <div class="manual-img">
+            <img src="manual_images/02-build-prompt.png" alt="拼接提示词">
+        </div>
+    </div>
+
+    <!-- ============ 第 3 步 ============ -->
+    <div class="step">
+        <span class="step-num">第 3 步</span>
+        <h2>粘贴给 AI，让它写配置:这个配置就是一段关于动画设计的代码,您不用管交给AI就行</h2>
+        <p>打开一个免费 AI 对话框（作者推荐DeepSeek）。</p>
+        <p>点了拼接提示词,就已经完成了复制动作<strong>到了AI对话框直接粘贴</strong>，按回车发送。</p>
+        <p>AI 会生成一份配置文件（以 <code>window.SCENES = [</code> 开头）。</p>
+
+        <div class="tip">
+            <strong>AI代码能力越强,生成的动画质量越好,越不容易出错。</strong>
+        </div>
+    </div>
+
+        <!-- ============ 第 4 步 ============ -->
+    <div class="step">
+        <span class="step-num">第 4 步</span>
+        <h2>复制配置，导入工具</h2>
+        <p>把 AI 生成的配置<strong>全部复制</strong>。复制这一步格外注意，不要把 AI 说的废话复制进去。开头是 <span style="color:#ff5050;font-weight:bold;">window.SCENES</span>，结尾是 <span style="color:#ff5050;font-weight:bold;">];</span>（中括号和分号）。<strong>注意核对。</strong></p>
+
+        <p>回到工具，点 <strong>「导入配置文件」</strong>。</p>
+        <p>界面会弹一个确认框。</p>
+        <div class="tip">
+            <strong>核对一下：</strong>弹窗里的内容，跟你文案区里的第一句，是不是一样？<br>
+            一样 → 点「确认导入」；不一样 → 点「取消」，说明复制错了，回去重新复制。
+        </div>
+
+        <div class="manual-img">
+            <img src="manual_images/03-import-config.png" alt="导入配置确认">
+        </div>
+
+    </div>
+
+    <!-- ============ 第 5 步 ============ -->
+    <div class="step">
+        <span class="step-num">第 5 步</span>
+        <h2>预览，调大小</h2>
+        <p>点 <strong>「预览画面」</strong>，会弹出一个预览窗口，自动播放这段动画。也可以点击鼠标快速切换下个一画面。</p>
+        <p>点右下角的 <strong>「调控面板」</strong> 按钮，调出尺寸面板。</p>
+
+        <div class="manual-img">
+            <img src="manual_images/04-preview.png" alt="预览窗口">
+        </div>
+
+        <p>面板里会列出当前画面所有的元素。点一下元素，拖动滑块，就能调整它的大小。</p>
+
+        <div class="warn">
+            <strong>调完大小，一定要点「保存修改」！</strong>不点，你调的尺寸就白调了，生成视频时用的还是原始大小。
+        </div>
+
+        <div class="tip">
+            <strong>觉得 AI 设计得不好？</strong>可以回到 AI 那边，用自然语言告诉它"第2个场景太挤了""字体颜色改成土豪金"等等，让它重新写一份完整的配置，再导入一次。
+        </div>
+    </div>
+
+    <!-- ============ 第 6 步 ============ -->
+    <div class="step">
+        <span class="step-num">第 6 步</span>
+        <h2>导入视频（录音）</h2>
+        <p>点 <strong>「导入视频」</strong>，选一个你录好的视频文件。</p>
+        <p>工具会把它复制进这个分镜的文件夹里。</p>
+        
+        <div class="manual-img">
+            <img src="manual_images/05-import-video.png" alt="导入视频">
+        </div>
+
+        <p><strong>关于录音，几点注意事项：</strong></p>
+        <ul>
+            <li>按照分镜文案录音，一段分镜文案对应一段录音<strong>做到一字不差</strong>。</li>
+            <li>正常说话就行，<strong>中间不要大喘气</strong>。</li>
+            <li><strong>两端不要有杂音</strong>，录完先等一秒再停。</li>
+            <li>录音环境尽量安静。</li>
+        </ul>
+
+        <div class="tip">
+            重点解释一下,其实需要上传的是音频,但为啥是视频.因为作者没有专业录音设备.平时用手机开视频录音,工具再从视频提取音频。目前只支持上传视频,后续再加入上传音频.
+        </div>
+    </div>
+
+    <!-- ============ 第 7 步 ============ -->
+    <div class="step">
+        <span class="step-num">第 7 步</span>
+        <h2>生成分镜视频</h2>
+        <p>界面顶部的文案 配置 视频 都打上了绿色对勾,说明生成视频的3个必备调节都具备了</p>
+        <ul>
+            <li>文案 ✅</li>
+            <li>配置 ✅</li>
+            <li>视频（带声音）✅</li>
+        </ul>
+        <p>点 <strong>「生成分镜视频」</strong>，工具开始自动处理。</p>
+        <p>跑完会看到"生成完成"的提示，进度条走到 100%。</p>
+
+       <div class="manual-img">
+            <img src="manual_images/06-generate.png" alt="生成分镜视频">
+        </div>
+
+        <div class="tip">
+            <strong>做完一个，看一眼，满意了再做下一个。</strong>点「新建分镜」可以继续做下一段。
+        </div>
+    </div>
+
+    <!-- ============ 第 8 步 ============ -->
+    <div class="step">
+        <span class="step-num">第 8 步</span>
+        <h2>生成完整视频</h2>
+        <p>所有分镜都做完以后，点 <strong>「生成完整视频」</strong>。</p>
+        <p>工具会把所有分镜的视频按顺序拼起来。</p>
+        <p>拼完后，点 <strong>「看成品视频」</strong>，就能打开文件夹，看到所有成品。</p>
+
+        <p>文件夹里会有：</p>
+        <ul>
+            <li><code>final_video_最终完整音画同步视频.mp4</code> —— 完整大视频</li>
+            <li><code>shot_01_分镜音画同步视频.mp4</code>、<code>shot_02_...</code> —— 每个分镜的单独视频</li>
+        </ul>
+    </div>
+
+    <!-- ============ 第 9 步 ============ -->
+    <div class="step">
+        <span class="step-num">第 9 步</span>
+        <h2>归档</h2>
+        <p>视频没问题了，点 <strong>「归档」</strong>。</p>
+        <p>工具会弹出一个小窗口，让你给这次项目起个名字（默认是日期时间）。</p>
+        <p>确认后，这次做的所有素材和成品，会移动到 <code>archives/</code> 文件夹里，收好。</p>
+        <p>同时，工具会自动新建一个干净的 <code>shot_01</code>，让你开始下一个视频。</p>
+
+        <div class="tip">
+            <strong>归档的意义：</strong>把这次做的东西整包收起来。以后想找、想参考，直接进 <code>archives</code> 翻。
+        </div>
+    </div>
+
+    <!-- ============ 遇到问题 ============ -->
+    <div class="step">
+        <span class="step-num">常见问题</span>
+        <h2>遇到问题怎么办</h2>
+
+        <div class="faq-item">
+            <div class="faq-q">Q：导入配置时，弹窗说"剪贴板里没读到配置内容"？</div>
+            <div class="faq-a">A：说明你复制的不是配置。回去检查一下，AI 生成的是不是以 <code>window.SCENES = [</code> 开头。如果不是，让它重新写一份。</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-q">Q：预览的时候白屏，什么都没显示？</div>
+            <div class="faq-a">A：配置写错了。回 AI 那边，让它重新写一份完整的配置，再导入一次。</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-q">Q：生成分镜视频卡住了？</div>
+            <div class="faq-a">A：渲染是最慢的一步，进度条在动就说明在跑，等一等。如果长时间卡住不动，关掉工具重开，再点一次。</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-q">Q：做好的视频，配音对不上画面？</div>
+            <div class="faq-a">A：可能是录音没说准。检查文案有没有念错、漏念。改完文案后，记得也重新录一遍，再生成一次。</div>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
