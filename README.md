@@ -16,7 +16,7 @@
 
 ## 快速使用（普通用户）
 
-1. 去 [发行版页面](https://gitee.com/learning-ai-with-bai-qiang/mg-tool/releases) 下载最新版 `mg_tool.zip`
+1. 去 [发行版页面](https://github.com/learning-ai-with-bai-qiang/mg-tool/releases) 下载最新版 `mg_tool.zip`
 2. 解压到任意目录（**路径不要带中文**）
 3. 双击 `mg_tool.exe`
 4. 第一次启动会弹一个"是否允许更改"的提示，点"是"（安装微软运行库，安全）
