@@ -33,8 +33,8 @@
 
 ### 步骤
 
-```bash
-git clone https://gitee.com/learning-ai-with-bai-qiang/mg-tool.git
+```bash 
+git clone https://github.com/learning-ai-with-bai-qiang/Mg-tool.git
 cd mg-tool
 
 # 创建虚拟环境
